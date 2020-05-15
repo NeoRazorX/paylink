@@ -16,51 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace FacturaScripts\Plugins\PayLink\Model;
+namespace FacturaScripts\Plugins\PayLink;
 
-use FacturaScripts\Core\Model\ReciboCliente as ParentModel;
+use FacturaScripts\Core\Base\InitClass;
 
 /**
- * Description of ReciboCliente
+ * Description of Init
  *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
-class ReciboCliente extends ParentModel
+class Init extends InitClass
 {
 
-    /**
-     *
-     * @var string
-     */
-    public $paylinkcode;
-
-    /**
-     * 
-     * @param string $type
-     * @param string $list
-     *
-     * @return string
-     */
-    public function url(string $type = 'auto', string $list = 'ListFacturaCliente?activetab=List')
+    public function init()
     {
-        if (empty($this->primaryColumnValue()) || $this->pagado) {
-            return parent::url($type, $list);
-        }
+        ;
+    }
 
-        if (empty($this->paylinkcode)) {
-            $this->paylinkcode = $this->getNewPayLinkCode();
-            $this->save();
-        }
-
-        return $this->toolBox()->appSettings()->get('paylink', 'siteurl') . '/PayLink?code=' . $this->paylinkcode;
+    public function update()
+    {
+        $appSettings = $this->toolBox()->appSettings();
+        $appSettings->set('paylink', 'siteurl', $this->getSiteUrl());
+        $appSettings->save();
     }
 
     /**
      * 
      * @return string
      */
-    private function getNewPayLinkCode(): string
+    protected function getSiteUrl()
     {
-        return $this->toolBox()->utils()->randomString(99);
+        $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $url .= '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        return \substr($url, 0, \strrpos($url, '/'));
     }
 }

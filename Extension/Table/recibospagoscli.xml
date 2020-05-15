@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table>
+    <column>
+        <name>paylinkcode</name>
+        <type>character varying(200)</type>
+    </column>
+</table>

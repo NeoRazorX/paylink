@@ -43,7 +43,7 @@ class ReciboCliente extends ParentModel
      */
     public function url(string $type = 'auto', string $list = 'ListFacturaCliente?activetab=List')
     {
-        if (empty($this->primaryColumnValue()) || $this->pagado) {
+        if (empty($this->primaryColumnValue()) || $this->pagado || $type != 'pay') {
             return parent::url($type, $list);
         }
 
